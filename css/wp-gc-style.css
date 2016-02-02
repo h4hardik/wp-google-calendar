@@ -1,0 +1,146 @@
+/* google cakendar plugin css*/
+.column-columnname{
+    font-weight: bold;
+}
+input.wpgc-input{
+    padding: 3px 8px;
+    font-size: 1.3em;
+    line-height: 100%;
+    height: 1.7em;
+    width: 90%;
+    outline: 0;
+    margin: 0;
+    background-color: #fff;
+}
+textarea.wpgc-textarea{
+    padding: 3px 8px;
+    font-size: 1.3em;
+    line-height: 100%;
+    height: 100px !important;
+    width: 90% !important;
+    outline: 0;
+    margin: 0;
+    background-color: #fff;
+}
+.wpg-date-input{
+    width: 64%;
+}
+.fc th, .fc td{
+    background: #fff;
+}
+.fc td:hover{
+    background: #F9F9F9;
+}
+.fc .fc-toolbar > * > :first-child {
+   
+    color: #182192;
+}
+.fc th {
+    background-color: #3F51B5;
+    color: #fff;
+}
+.wpgc-table{
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    white-space: nowrap;
+    font-size: 13px;
+}
+.wpgc-table thead{
+    background: #3f51b5;
+
+}
+.wpgc-table thead th{
+    color: #fff !important;
+    border: 1px solid #3f51b5 !important;
+}
+.wpgc-table tbody tr {
+    border: 1px solid #3f51b5 !important;
+   background-color: #fff !important; 
+}
+.wpgc-table tbody tr:hover {
+    background-color: #eee !important;
+    
+}
+.wpgc-table td {
+    border: 1px solid #3f51b5 !important;
+    
+}
+.entry-view-field-name{
+    font-weight: 700;
+    background-color: #EAF2FA;
+    border-bottom: 1px solid #FFF;
+    line-height: 1.5;
+    padding: 7px;
+}
+.wpgc-setting-table{
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    width:80%;
+    font-size: 13px;
+}
+.wpgc-setting-table label{
+    vertical-align: middle;
+    cursor: pointer;
+}
+.wpgc-setting-table h3{
+    font-size: 14px;
+    padding: 8px 12px;
+    margin: 0;
+    line-height: 1.4;
+    color: #23282d;
+    display: block;
+    font-weight: 600;
+}
+.wpgc-setting-table textarea{
+    width:50%;
+    height:50px;
+    margin-bottom:4px;
+}
+p.wpgc-done{
+    color: #50B948;
+    font-weight: bold;
+}
+.wpgc-mdl-button{
+    background: #3f51b5;
+    color: #fff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+    border: none;
+    border-radius: 2px;
+    position: relative;
+    height: 36px;
+    min-width: 64px;
+    padding: 0 16px;
+    display: inline-block;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    overflow: hidden;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    line-height: 36px;
+    vertical-align: middle;
+}
+a.wpgc-mdl-button:hover{
+    color:#fff;
+}
+a.fc-event{
+    border-bottom: none;
+    border: 1px solid #3f51b5 !important;
+    background-color: #3f51b5 !important;
+    color:#FFF !important;
+}
+
+
+.wpgc-doc h1.wpgc-head{
+    text-align: center;
+}
+.wpgc-doc p{
+    font-size: 15px;
+    text-align: justify;
+}

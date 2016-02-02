@@ -1,0 +1,107 @@
+
+@import "cmxformTemplate.css";
+@import "cmxform.css";
+
+.fc button.fc-prev-button, .fc button.fc-next-button{
+    width: 35px;
+    height: 27px;
+}
+.fc button.fc-prev-button:hover, .fc button.fc-next-button:hover,.fc button.fc-today-button:hover,.fc button.fc-month-button:hover, .fc button.fc-agendaWeek-button:hover, .fc button.fc-agendaDay-button:hover{
+    background: #E6E6E6 !important;
+}
+.fc button.fc-month-button, .fc button.fc-agendaWeek-button, .fc button.fc-agendaDay-button{
+    font-size: 14px;
+}
+.fc button .fc-icon {
+    margin: 0 -1.8em !important;
+}
+.fc button.fc-today-button{
+    height: 27px;
+    font-size: 14px;
+    color: #333333 !important;
+    font-weight: normal;
+    text-transform: capitalize;
+}
+.fc-center h2{
+    font-size: 23px;
+    font-weight: 400;
+    padding: 9px 15px 4px 0;
+    line-height: 29px;
+    color: #333333 !important;
+}
+.fc th {
+    background-color: #3F51B5 !important;
+    color: #fff !important;
+}
+.fc-day-grid-container{
+    height: 100% !important;
+}
+a.fc-event{
+    border-bottom: none;
+    border: 1px solid #37C641;
+    background-color: #2CB735;
+    color:#fff !important;
+}
+.fc-view-container .fc-view{
+    border: 1px solid #3F51B5;
+}
+.fc-view-container .fc-view table{
+    margin-bottom: 0 !important;
+}
+
+
+#calendar {
+    width: 500px;
+    margin: 0 auto;
+    font-size: 10px;
+}
+.busy {
+    background-color: #ac1b1b !important;
+    border: 1px solid #ac1b1b !important;
+}
+/*
+#eventContent .txt-fld {
+    border-bottom: 1px solid #eee;
+    padding: 14px 20px;
+    position: relative;
+    text-align: right;
+    width: 364px;
+}
+#eventContent .txt-fld label {
+    color: #222;
+    display: block;
+    float: left;
+    font-size: 62.5%;
+    padding-top: 8px;
+    text-align: left;
+    width: 90px;
+}
+
+#eventContent .txt-fld input {
+    border-color: #ccc #e7e6e6 #e7e6e6 #ccc;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    color: #222;
+    font-family: "Helvetica Neue";
+    font-size: 11px;
+    outline: medium none;
+    padding: 8px;
+    width: 244px;
+}
+#eventContent .submit {
+    background: #3f9d4a none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 4px;
+    color: #fff;
+    float: right;
+    font-family: "Helvetica Neue","Helvetica","Arial",sans-serif;
+    font-size: 1.4em;
+    font-weight: bold;
+    overflow: visible;
+    padding: 7px 10px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+    width: auto;
+}
+*/
+
