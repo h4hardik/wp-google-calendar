@@ -42,6 +42,8 @@ jQuery(document).ready(function() {
                 element.click(function () {
                     jQuery("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
                     jQuery("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
+                    jQuery("#start_date").val(event.start);
+                    jQuery("#end_date").val(event.end);
                     jQuery("#eventInfo").html(event.description);
                     jQuery("#eventLink").attr('href', event.url);
                     jQuery('#eventform').validate({
@@ -52,8 +54,8 @@ jQuery(document).ready(function() {
                                     type: "POST",
                                     url:  my_ajax_object.ajax_url,
                                     data : {
-                                        'frm_data':jQuery( "#eventform" ).serializeArray(),
-                                        'action': 'my_action'
+                                        'frm_data':jQuery( "#eventform" ).serialize(),
+                                        'action': 'add_event_action'
                                     },
                                     success: function( data ) {
                                         jQuery('#eventContent .contact-loading').fadeOut(200, function () {
