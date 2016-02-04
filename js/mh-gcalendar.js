@@ -40,10 +40,10 @@ jQuery(document).ready(function() {
             } else {
                 element.attr('href', 'javascript:void(0);');
                 element.click(function () {
-                    jQuery("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
-                    jQuery("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
-                    jQuery("#start_date").val(event.start);
-                    jQuery("#end_date").val(event.end);
+                    jQuery("#start_date").val(moment(event.start).format('YYYY-MM-DD h:mm:ss'));
+                    jQuery("#end_date").val(moment(event.end).format('YYYY-MM-DD h:mm:ss'));
+                    /*jQuery("#start_date").val(event.start);
+                    jQuery("#end_date").val(event.end);*/
                     jQuery("#eventInfo").html(event.description);
                     jQuery("#eventLink").attr('href', event.url);
                     jQuery('#eventform').validate({

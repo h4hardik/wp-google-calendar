@@ -54,29 +54,17 @@ function wp_gc_calendar_activate()
     if ( $wpdb->get_var('SHOW TABLES LIKE ' . $table_name) != $table_name )
     {
         $sql = 'CREATE TABLE ' . $table_name . '(
-				kind VARCHAR (255),
-				etag VARCHAR (255),
 				id VARCHAR (255) NOT NULL,
-				status VARCHAR (255),
-				htmlLink VARCHAR (255),
-				created DATETIME,
-				updated DATETIME,
-				summary VARCHAR (255),
 				description TEXT,
-				location VARCHAR (255),
-				colorId VARCHAR (255),
+				name VARCHAR (255),
+				phone VARCHAR (255),
 				start_Date DATE,
 				start_Time TIME,
-				start_TimeZone VARCHAR (255),
 				end_Date DATE,
 				end_Time TIME,
-				attendees TEXT,
-				notification VARCHAR (255),
-				time INTEGER(10),
-				end_TimeZone VARCHAR (255),
-				localID INTEGER(10) UNSIGNED AUTO_INCREMENT,
-				CalenderID VARCHAR (255),
-				PRIMARY KEY  (localID))';
+				created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				event_id INTEGER(10) UNSIGNED AUTO_INCREMENT,
+				PRIMARY KEY  (event_id))';
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
@@ -330,8 +318,8 @@ function wp_gc_my_calendar()
                     <textarea id="pNotes" name="pNotes"></textarea>
                 </p>
                 <p class="btn-fld">
-                    <input id="start_date" name="start_date" type="hidden">
-                    <input id="end_date" name="end_date" type="hidden">
+                    <input id="start_date" name="start_date" type="text">
+                    <input id="end_date" name="end_date" type="text">
                     <input id="savebtn" class="btn-frm" type="submit" value="Save">
                     <input id="cancebtn" class="btn-frm" type="button" value="Cancel" onClick="jQuery('#eventContent').dialog('close');jQuery('#eventform').trigger( 'reset' );">
                 </p>
@@ -396,40 +384,32 @@ function set_html_content_type_mail() {
 function add_event_action_callback() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'google_events';
-    $message = '';
-
     $frm_data = array();
     parse_str($_POST['frm_data'], $frm_data);
 
-    foreach ($frm_data as $key => $value) {
+    print_r($frm_data);
 
-        $event = array(
-            'kind' => sanitize_text_field($value['kind']),
-            'etag' => sanitize_text_field($value['etag']),
-            'id' => sanitize_text_field($value['id']),
-            'status' => sanitize_text_field($value['status']),
-            'htmlLink' => sanitize_text_field($value['htmlLink']),
-            'created' => sanitize_text_field($value['created']),
-            'updated' => sanitize_text_field($value['updated']),
-            'summary' => sanitize_text_field($value['summary']),
-            'description' => sanitize_text_field($value['description']),
-            'location' => sanitize_text_field($value['location']),
-            'start_Date' => sanitize_text_field($date1[0]),
-            'start_Time' => sanitize_text_field($time1[0]),
-            'end_Date' => sanitize_text_field($date2[0]),
-            'end_Time' => sanitize_text_field($time2[0])
-        );
+    $start_date_time = explode(" ",$frm_data['start_date']);
+    $end_date_time = explode(" ",$frm_data['end_date']);
+    $message =  $frm_data['pNotes'];
+    $phone =  $frm_data['pPhone'];
+    $email =  $frm_data['pEmail'];
+    $name =  $frm_data['pName'];
+
+    $event = array(
+        'name' => sanitize_text_field($name),
+        'phone' => sanitize_text_field($phone),
+        'email' => sanitize_text_field($email),
+        'description' => sanitize_text_field($message),
+        'start_Date' => sanitize_text_field($start_date_time[0]),
+        'start_Time' => sanitize_text_field($start_date_time[1]),
+        'end_Date' => sanitize_text_field($end_date_time[0]),
+        'end_Time' => sanitize_text_field($end_date_time[1])
+    );
+    $result = $wpdb->insert($table_name,$event);
+    if ($result === false){
+        echo "Error in Insert!!";
     }
-    $add = $wpdb->insert($table_name,$event);
-    exit;
-    for($i=0;$i<count($frm_data);$i++){
-        $message.= $frm_data[$i]['name']."=".$frm_data[$i]['value']."\n";
-    }
-    $user_email = get_option('admin_email'); //'hardik.bhavsar@martindale.com';
-    $subject = "SCHEDULE AN APPOINTMENT REQUEST:".$frm_data[0]['name'];
-    if ( $message && !wp_mail( $user_email, wp_specialchars_decode( $subject ), $message ) )
-        wp_die( __('The email could not be sent.') . "<br />\n" . __('Possible reason: your host may have disabled the mail() function.') );
     wp_die(); // this is required to terminate immediately and return a proper response
 }
-
 add_action( 'wp_ajax_wpgc_events_action', 'wpgc_events_action_callback' );
