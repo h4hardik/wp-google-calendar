@@ -1,5 +1,5 @@
-<?php 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+<?php
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 /*
     Plugin Name: Wp Google Calendar
@@ -8,56 +8,63 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
     Version: 1.0.0
  */
 
-add_action( 'admin_enqueue_scripts', 'wp_gc_styles' );
-add_action( 'admin_enqueue_scripts', 'wp_gc_scripts' );
+add_action('admin_enqueue_scripts', 'wp_gc_styles');
+add_action('admin_enqueue_scripts', 'wp_gc_scripts');
 
 // Frontend Style
 
-function wp_gc_styles( ) {
-    wp_enqueue_style( 'wp-gc-style', plugins_url('css/wp-gc-style.css', __FILE__));
-    wp_enqueue_style( 'fullcalendar', plugins_url('css/fullcalendar.css', __FILE__));
+function wp_gc_styles()
+{
+    wp_enqueue_style('wp-gc-style', plugins_url('css/wp-gc-style.css', __FILE__));
+    wp_enqueue_style('fullcalendar', plugins_url('css/fullcalendar.css', __FILE__));
 }
+
 // Add styles for front side
 
-function wp_gcf_styles( ) {
-    wp_enqueue_style( 'gc-style-frontend', plugins_url('css/gc-style-frontend.css', __FILE__));
-    wp_enqueue_style( 'fullcalendar', plugins_url('css/fullcalendar.css', __FILE__));
-    wp_enqueue_style( 'jqueryui', plugins_url('css/jquery-ui.css', __FILE__));
+function wp_gcf_styles()
+{
+    wp_enqueue_style('gc-style-frontend', plugins_url('css/gc-style-frontend.css', __FILE__));
+    wp_enqueue_style('fullcalendar', plugins_url('css/fullcalendar.css', __FILE__));
+    wp_enqueue_style('jqueryui', plugins_url('css/jquery-ui.css', __FILE__));
 }
 
 // Add js to backend
-function wp_gc_scripts() {
-	wp_enqueue_script('jquery');
-    wp_enqueue_script( 'moment.min', plugins_url('js/moment.min.js', __FILE__) );
-    wp_enqueue_script( 'fullcalendar.min', plugins_url('js/fullcalendar.min.js', __FILE__) );
+function wp_gc_scripts()
+{
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('moment.min', plugins_url('js/moment.min.js', __FILE__));
+    wp_enqueue_script('fullcalendar.min', plugins_url('js/fullcalendar.min.js', __FILE__));
 }
 
 // Add js for front side
-function wp_gcf_scripts() {
-	wp_enqueue_script('jquery');
-    wp_enqueue_script( 'moment.min', plugins_url('js/moment.min.js', __FILE__) );
-    wp_enqueue_script( 'fullcalendar.min', plugins_url('js/fullcalendar.min.js', __FILE__) );
-    wp_enqueue_script( 'jqueryui.min', plugins_url('js/jquery-ui.min.js', __FILE__) );
-    wp_enqueue_script( 'jqueryvalidate.min', plugins_url('js/jquery.validate.js', __FILE__) );
-    wp_enqueue_script( 'mh-gcalendar', plugins_url('js/mh-gcalendar.js', __FILE__) );
+function wp_gcf_scripts()
+{
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('moment.min', plugins_url('js/moment.min.js', __FILE__));
+    wp_enqueue_script('fullcalendar.min', plugins_url('js/fullcalendar.min.js', __FILE__));
+    wp_enqueue_script('jqueryui.min', plugins_url('js/jquery-ui.min.js', __FILE__));
+    wp_enqueue_script('jqueryvalidate.min', plugins_url('js/jquery.validate.js', __FILE__));
+    wp_enqueue_script('mh-gcalendar', plugins_url('js/mh-gcalendar.js', __FILE__));
 }
 
-add_action('wp_head','wp_gcf_styles');
-add_action('wp_footer','wp_gcf_scripts');
+add_action('wp_head', 'wp_gcf_styles');
+add_action('wp_footer', 'wp_gcf_scripts');
 
+/**
+ *
+ */
 function wp_gc_calendar_activate()
 {
     global $wpdb;
 
     $table_name = $wpdb->prefix . "google_events";
 
-    if ( $wpdb->get_var('SHOW TABLES LIKE ' . $table_name) != $table_name )
-    {
+    if ($wpdb->get_var('SHOW TABLES LIKE ' . $table_name) != $table_name) {
         $sql = 'CREATE TABLE ' . $table_name . '(
-				id VARCHAR (255) NOT NULL,
 				description TEXT,
 				name VARCHAR (255),
 				phone VARCHAR (255),
+				email VARCHAR (255),
 				start_Date DATE,
 				start_Time TIME,
 				end_Date DATE,
@@ -68,10 +75,10 @@ function wp_gc_calendar_activate()
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-        add_option('events_database_version','1.0');
+        add_option('events_database_version', '1.0');
     }
 
-    if($wpdb->query("SHOW TABLES LIKE '$table_name'")){
+    /*if($wpdb->query("SHOW TABLES LIKE '$table_name'")){
         if (($tablefields = $wpdb->get_results( 'SHOW COLUMNS FROM '.$table_name, OBJECT )) == TRUE) {
             $columns = count($tablefields);
             $field_array = array();
@@ -90,11 +97,10 @@ function wp_gc_calendar_activate()
             $wpdb->query('ALTER TABLE '. $table_name .' ADD notification VARCHAR(250)');
         }
         $wpdb->query('ALTER TABLE '. $table_name .' MODIFY description TEXT;');
-    }
+    }*/
 
     $table_setting = $wpdb->prefix . "google_api_setting";
-    if ( $wpdb->get_var('SHOW TABLES LIKE ' . $table_setting) != $table_setting )
-    {
+    if ($wpdb->get_var('SHOW TABLES LIKE ' . $table_setting) != $table_setting) {
         $sql = 'CREATE TABLE ' . $table_setting . '(
 				id_setting INTEGER(10) UNSIGNED AUTO_INCREMENT,
 				clientID VARCHAR (255),
@@ -103,44 +109,45 @@ function wp_gc_calendar_activate()
 				defaultDate DATE,
 				priority VARCHAR (255),
 				PRIMARY KEY  (id_setting) )';
-
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-        add_option('api_setting_database_version','1.0');
+        add_option('api_setting_database_version', '1.0');
     }
-
 }
-register_activation_hook(__FILE__,'wp_gc_calendar_activate');
+
+register_activation_hook(__FILE__, 'wp_gc_calendar_activate');
 
 // Plugin Menu
 function wp_gc_plugin_menu()
 {
-	$root = plugin_dir_url( __FILE__ );
+    $root = plugin_dir_url(__FILE__);
 
-    add_menu_page('Google Calendar Settings','WP Google Calendar', 'manage_options', 'wp-google-calendar-plg', 'wp_gc_calendar_page', $root.'img/calendar.png');
+    add_menu_page('Google Calendar Settings', 'WP Google Calendar', 'manage_options', 'wp-google-calendar-plg', 'wp_gc_calendar_page', $root . 'img/calendar.png');
 
-	add_submenu_page( 'wp-google-calendar-plg', 'Google Calendar Settings' . ' All Events', ' All Events', 'manage_options','wp-google-calendar-plg', 'wp_gc_calendar_page');
+    add_submenu_page('wp-google-calendar-plg', 'Google Calendar Settings' . ' All Events', ' All Events', 'manage_options', 'wp-google-calendar-plg', 'wp_gc_calendar_page');
 
-	add_submenu_page('wp-google-calendar-plg','Settings', 'Settings', 'manage_options',
-					'wp-google-calendar-settings', 'wp_gc_settings');
+    add_submenu_page('wp-google-calendar-plg', 'Settings', 'Settings', 'manage_options',
+        'wp-google-calendar-settings', 'wp_gc_settings');
 
-	add_submenu_page('wp-google-calendar-plg','Documentation', 'Documentation', 'manage_options',
-					'wpgc-documentation', 'wpgc_documentation');
-	
+    add_submenu_page('wp-google-calendar-plg', 'Documentation', 'Documentation', 'manage_options',
+        'wpgc-documentation', 'wpgc_documentation');
+
 }
+
 add_action('admin_menu', 'wp_gc_plugin_menu');
 
 /* Admin Interface - display google calendar */
 function wp_gc_calendar_page()
 {
-    $calendar_file = get_option( 'google_cal_file' );
-    if($calendar_file==''){ ?>
-    <h2>Settings required ! </h2>
-    <p><a href="<?php echo admin_url('admin.php?page=google-calendar-settings'); ?>">Go to settings</a></p>
-    <?php exit(); }
+    $calendar_file = get_option('google_cal_file');
+    if ($calendar_file == '') { ?>
+        <h2>Settings required ! </h2>
+        <p><a href="<?php echo admin_url('admin.php?page=google-calendar-settings'); ?>">Go to settings</a></p>
+        <?php exit();
+    }
     include_once('class.iCalReader.php');
     date_default_timezone_set('US/Eastern'); // set default timezone
-    $ical   = new ICal($calendar_file);
+    $ical = new ICal($calendar_file);
     $events = $ical->eventsFromRange(true, true);
 
     foreach ($events as $event) { // for testing purposes
@@ -148,154 +155,162 @@ function wp_gc_calendar_page()
             'title' => addslashes($event['SUMMARY']),
             'start' => date('Y-m-d\TH:i:s', strtotime($event['DTSTART'])),
             'end' => date('Y-m-d\TH:i:s', strtotime($event['DTEND'])),
-            'allDay' => strlen($event['DTSTART'])==8 ? true : false,
-            'busy'=>1
+            'allDay' => strlen($event['DTSTART']) == 8 ? true : false,
+            'busy' => 1
         );
     }
     $e = json_encode($ev);
-  ?>
+    ?>
 
     <script src="https://apis.google.com/js/client.js">
     </script>
-	<div class="wrap">
-        <div style="display:none" class="eventJson" defaultDate = "<?php echo date('Y-m-d'); ?>" data='<?php echo $e; ?>'></div>
+    <div class="wrap">
+        <div style="display:none" class="eventJson" defaultDate="<?php echo date('Y-m-d'); ?>"
+             data='<?php echo $e; ?>'></div>
 
-	<h2>List of upcoming events</h2>
-	
-	<h5>Use the Short code <strong style="color:red;">[wp-gc-calendar]</strong> to display your calendar in your posts or pages.</h5>
-	
-	
-
-            <script>
-                jQuery(document).ready(function() {
-                    var ev = eval(jQuery("div.eventJson").attr("data"));
-                    var default_Date = jQuery("div.eventJson").attr("defaultDate");
-                    jQuery('#calendar').fullCalendar({
-                        header: {
+        <h2>List of upcoming events</h2>
+        <h5>Use the Short code <strong style="color:red;">[wp-gc-calendar]</strong> to display your calendar in your
+            posts or pages.</h5>
+        <script>
+            jQuery(document).ready(function () {
+                var ev = eval(jQuery("div.eventJson").attr("data"));
+                var default_Date = jQuery("div.eventJson").attr("defaultDate");
+                jQuery('#calendar').fullCalendar({
+                    header: {
                         left: 'prev,next today',
                         center: 'title',
                         right: 'month,agendaWeek,agendaDay'
-                        },
-                        defaultDate: default_Date,
-                        selectable: false,
-                        selectHelper: false,
-                        select: function(start, end) {
-                            var title = prompt('Event Title:');
-                            var eventData;
-                            if (title) {
-                                eventData = {
-                                    title: title,
-                                    start: start,
-                                    end: end
-                                };
-                                jQuery('#calendar').fullCalendar('renderEvent', eventData, true);
-                            }
-                            jQuery('#calendar').fullCalendar('unselect');
-                        },
-                        editable: false,
-                        eventLimit: false,
-                        events: ev
-                        });
+                    },
+                    defaultDate: default_Date,
+                    selectable: false,
+                    selectHelper: false,
+                    select: function (start, end) {
+                        var title = prompt('Event Title:');
+                        var eventData;
+                        if (title) {
+                            eventData = {
+                                title: title,
+                                start: start,
+                                end: end
+                            };
+                            jQuery('#calendar').fullCalendar('renderEvent', eventData, true);
+                        }
+                        jQuery('#calendar').fullCalendar('unselect');
+                    },
+                    editable: false,
+                    eventLimit: false,
+                    events: ev
+                });
 
-                    });
-            </script>
-		<div id='calendar'></div>
-	</div>
-	<?php
+            });
+        </script>
+        <div id='calendar'></div>
+    </div>
+<?php
 }
-
 /* Admin Setting Page function */
 function wp_gc_settings()
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'google_api_setting';
-    $calendar_file = get_option( 'google_cal_file' );
-	if($_POST){
-		if(isset($_POST['calendar_file'])){
+    $calendar_file = get_option('google_cal_file');
+    if ($_POST) {
+        if (isset($_POST['calendar_file'])) {
             $calendar_file = urldecode($_POST['calendar_file']);
             $id_setting = intval($_POST['id_setting']);
             $clientID = sanitize_text_field($_POST['clientID']);
             $calendarID = sanitize_text_field($_POST['calendarID']);
-            if(isset($_POST['id_setting'])){
+            if (isset($_POST['id_setting'])) {
                 $data = array(
                     'id_setting' => $id_setting,
                     'clientID' => $clientID,
                     'calendarID' => $calendarID,
                     'calendarFile' => $calendar_file
                 );
-                $wpdb->update($table_name,$data,array( 'id_setting' => $id_setting ));
-            }else{
+                $wpdb->update($table_name, $data, array('id_setting' => $id_setting));
+            } else {
                 $data = array(
                     'clientID' => $clientID,
                     'calendarID' => $calendarID,
                     'calendarFile' => $calendar_file
                 );
-                $wpdb->insert($table_name,$data);
+                $wpdb->insert($table_name, $data);
             }
-            add_option('google_cal_file',$calendar_file);
-		}
-	}
+            add_option('google_cal_file', $calendar_file);
+        }
+    }
+    $settings = $wpdb->get_row('select * from ' . $table_name);
+    ?>
+    <div class="wrap">
+        <form action="" method="post" id="insert-event">
+            <?php if ($settings) { ?>
+                <input type="hidden" id="id_setting" name="id_setting"
+                       value="<?php if ($settings) {
+                           echo esc_attr($settings->id_setting);
+                       } ?>"/>
+            <?php } ?>
+            <table class="wpgc-setting-table">
+                <tr>
+                    <td colspan="2" class="entry-view-field-name">Settings</td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3><label for="clientID">Google Calendar ICAL URL </label></h3>
+                    </td>
+                    <td>
+                        <input type="text" id="calendar_file" class="input" name="calendar_file"
+                               value="<?php if ($settings) {
+                                   echo esc_attr($settings->calendarFile);
+                               } ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3><label for="clientID">Client ID </label></h3>
+                    </td>
+                    <td>
+                        <input type="text" id="clientID" class="input" name="clientID"
+                               value="<?php if ($settings) {
+                                   echo esc_attr($settings->clientID);
+                               } ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3><label for="calendarID">Calendar ID </label></h3>
+                    </td>
+                    <td>
+                        <input type="text" id="calendarID" class="input" name="calendarID"
+                               value="<?php if ($settings) {
+                                   echo esc_attr($settings->calendarID);
+                               } ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p>
+                            <input type="submit" name="submit" value="Save" class="wpgc-mdl-button"
+                                   style="float:right; margin: 0 20px 10px 0"/>
+                            <a href="<?php echo admin_url('admin.php?page=wp-google-calendar-plg'); ?>"
+                               class="wpgc-mdl-button" style="float:right; margin: 0 20px 10px 0"/>Cancel</a>
+                        </p>
 
-    $settings = $wpdb->get_row('select * from ' . $table_name );
-
-	?>
-	<div class="wrap">
-	<form action="" method="post" id="insert-event">
-    <?php if($settings){ ?>
-        <input type="hidden" id="id_setting" name="id_setting"
-               value="<?php if($settings){ echo esc_attr($settings->id_setting); } ?>" />
-    <?php } ?>
-	<table class="wpgc-setting-table">
-		<tr>
-			<td colspan="2" class="entry-view-field-name">Settings</td>
-		</tr>
-		<tr>
-			<td>
-				<h3><label for="clientID">Google Calendar ICAL URL </label> </h3>
-			</td>
-			<td>
-				<input type="text" id="calendar_file" class="input" name="calendar_file"
-                       value="<?php if($settings){ echo esc_attr($settings->calendarFile); } ?>"/>
-			</td>
-		</tr>
-        <tr>
-            <td>
-                <h3><label for="clientID">Client ID </label> </h3>
-            </td>
-            <td>
-                <input type="text" id="clientID" class="input" name="clientID"
-                       value="<?php if($settings){ echo esc_attr($settings->clientID); } ?>"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3><label for="calendarID">Calendar ID </label> </h3>
-            </td>
-            <td>
-                <input type="text" id="calendarID" class="input" name="calendarID"
-                       value="<?php if($settings){ echo esc_attr($settings->calendarID); } ?>"/>
-            </td>
-        </tr>
-        <tr><td>&nbsp;</td></tr>
-		<tr>
-			<td colspan="2">
-				<p>
-					<input type="submit" name="submit" value="Save" class="wpgc-mdl-button" style="float:right; margin: 0 20px 10px 0" />
-					<a href="<?php echo admin_url( 'admin.php?page=wp-google-calendar-plg'); ?>" class="wpgc-mdl-button" style="float:right; margin: 0 20px 10px 0"/>Cancel</a>
-				</p>
-
-			</td>
-		</tr>
-	</table>
-	<?php wp_nonce_field('calendar_event'); ?>
-	</form>
-	</div>
+                    </td>
+                </tr>
+            </table>
+            <?php wp_nonce_field('calendar_event'); ?>
+        </form>
+    </div>
 <?php
 }
 
 /* Front-end form to add event */
 function wp_gc_my_calendar()
-{?>
+{
+    ?>
     <div id="eventContent" title="Event Details" style="display:none;" class="contact-content">
         <div class="contact-loading" style="display:none"></div>
         <div class="success_msg"></div>
@@ -305,96 +320,104 @@ function wp_gc_my_calendar()
                     <label for="pName">Your Name</label>
                     <input id="pName" name="pName" minlength="2" type="text" required>
                 </p>
+
                 <p class="txt-fld">
                     <label for="pEmail">Your E-Mail</label>
                     <input id="pEmail" type="email" name="pEmail" required>
                 </p>
+
                 <p class="txt-fld">
                     <label for="pPhone">Your Phone</label>
                     <input id="pPhone" type="phone" name="pPhone" required>
                 </p>
+
                 <p class="txt-fld">
                     <label for="pNotes">Your Message</label>
                     <textarea id="pNotes" name="pNotes"></textarea>
                 </p>
+
                 <p class="btn-fld">
-                    <input id="start_date" name="start_date" type="text">
-                    <input id="end_date" name="end_date" type="text">
+                    <input id="start_date" name="start_date" type="hidden">
+                    <input id="end_date" name="end_date" type="hidden">
                     <input id="savebtn" class="btn-frm" type="submit" value="Save">
-                    <input id="cancebtn" class="btn-frm" type="button" value="Cancel" onClick="jQuery('#eventContent').dialog('close');jQuery('#eventform').trigger( 'reset' );">
+                    <input id="cancebtn" class="btn-frm" type="button" value="Cancel"
+                           onClick="jQuery('#eventContent').dialog('close');jQuery('#eventform').trigger( 'reset' );">
                 </p>
             </fieldset>
         </form>
         <p id="eventInfo"></p>
     </div>
-<?php
+    <?php
     include_once('class.iCalReader.php');
     date_default_timezone_set('US/Eastern'); // set default timezone
-    $calendar_file = get_option( 'google_cal_file' );
-    if($calendar_file==''){?>
+    $calendar_file = get_option('google_cal_file');
+    if ($calendar_file == '') {
+        ?>
         <h2>Settings required ! </h2>
         <p><a href="<?php echo admin_url('admin.php?page=wp-google-calendar-settings'); ?>">Go to settings</a></p>
-        <?php exit(); }
-    $ical   = new ICal($calendar_file);
+        <?php exit();
+    }
+    $ical = new ICal($calendar_file);
     $events = $ical->eventsFromRange(true, true);
 
     foreach ($events as $event) {
         if (isset($event['TRANSP'])) {
             $key = "url";
-            $value ="javascript: showForm()";
-        }
-        else {
+            $value = "javascript: showForm()";
+        } else {
             $key = "busy";
-            $value="1";
+            $value = "1";
         }
         $ev[] = array(
             'title' => addslashes($event['SUMMARY']),
             'start' => date('Y-m-d\TH:i:s', strtotime($event['DTSTART'])),
             'end' => date('Y-m-d\TH:i:s', strtotime($event['DTEND'])),
-            'allDay' => strlen($event['DTSTART'])==8 ? true : false,
+            'allDay' => strlen($event['DTSTART']) == 8 ? true : false,
             $key => $value
         );
     }
-	$e = json_encode($ev);
-	?>
-	<div style="display:none" class="eventJson" defaultDate="<?php echo date('Y-m-d'); ?>" data='<?php echo $e; ?>'></div>
-<?php
-	return "<div id='calendar'></div>";
+    $e = json_encode($ev);
+    ?>
+    <div style="display:none" class="eventJson" defaultDate="<?php echo date('Y-m-d'); ?>"
+         data='<?php echo $e; ?>'></div>
+    <?php
+    return "<div id='calendar'></div>";
 }
 
-function wp_gc_my_enqueue() {
+function wp_gc_my_enqueue()
+{
 
-    wp_enqueue_script( 'ajax-script',plugins_url('js/mh-gcalendar.js', __FILE__) );
-    wp_localize_script( 'ajax-script', 'my_ajax_object',
-        array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+    wp_enqueue_script('ajax-script', plugins_url('js/mh-gcalendar.js', __FILE__));
+    wp_localize_script('ajax-script', 'my_ajax_object',
+        array('ajax_url' => admin_url('admin-ajax.php')));
 }
 
-add_action( 'wp_enqueue_scripts', 'wp_gc_my_enqueue' );
-add_shortcode('wp-gc-calendar','wp_gc_my_calendar');
-add_action( 'wp_ajax_add_event_action', 'add_event_action_callback' );
-add_filter( 'wp_mail_content_type', 'set_html_content_type_mail' );
+add_action('wp_enqueue_scripts', 'wp_gc_my_enqueue');
+add_shortcode('wp-gc-calendar', 'wp_gc_my_calendar');
+add_action('wp_ajax_add_event_action', 'add_event_action_callback');
+add_filter('wp_mail_content_type', 'set_html_content_type_mail');
 
-function set_html_content_type_mail() {
+function set_html_content_type_mail()
+{
     return 'text/html';
 }
 
 /**
  * Send mail to user
  */
-function add_event_action_callback() {
+function add_event_action_callback()
+{
     global $wpdb;
     $table_name = $wpdb->prefix . 'google_events';
     $frm_data = array();
     parse_str($_POST['frm_data'], $frm_data);
 
-    print_r($frm_data);
-
-    $start_date_time = explode(" ",$frm_data['start_date']);
-    $end_date_time = explode(" ",$frm_data['end_date']);
-    $message =  $frm_data['pNotes'];
-    $phone =  $frm_data['pPhone'];
-    $email =  $frm_data['pEmail'];
-    $name =  $frm_data['pName'];
+    $start_date_time = explode(" ", $frm_data['start_date']);
+    $end_date_time = explode(" ", $frm_data['end_date']);
+    $message = $frm_data['pNotes'];
+    $phone = $frm_data['pPhone'];
+    $email = $frm_data['pEmail'];
+    $name = $frm_data['pName'];
 
     $event = array(
         'name' => sanitize_text_field($name),
@@ -406,10 +429,16 @@ function add_event_action_callback() {
         'end_Date' => sanitize_text_field($end_date_time[0]),
         'end_Time' => sanitize_text_field($end_date_time[1])
     );
-    $result = $wpdb->insert($table_name,$event);
-    if ($result === false){
+    $result = $wpdb->insert($table_name, $event);
+
+    echo "<pre>";
+    print_r($result);
+    exit;
+
+    if ($result === false) {
         echo "Error in Insert!!";
     }
     wp_die(); // this is required to terminate immediately and return a proper response
 }
-add_action( 'wp_ajax_wpgc_events_action', 'wpgc_events_action_callback' );
+
+add_action('wp_ajax_wpgc_events_action', 'wpgc_events_action_callback');
