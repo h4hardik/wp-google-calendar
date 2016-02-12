@@ -128,10 +128,6 @@ function wp_gc_plugin_menu()
 
     add_submenu_page('wp-google-calendar-plg', 'Settings', 'Settings', 'manage_options',
         'wp-google-calendar-settings', 'wp_gc_settings');
-
-    add_submenu_page('wp-google-calendar-plg', 'Documentation', 'Documentation', 'manage_options',
-        'wpgc-documentation', 'wpgc_documentation');
-
 }
 
 add_action('admin_menu', 'wp_gc_plugin_menu');
