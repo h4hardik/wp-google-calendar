@@ -201,7 +201,6 @@ function wp_gc_calendar_page()
                     eventLimit: false,
                     events: ev
                 });
-
             });
         </script>
         <div id='calendar'></div>
@@ -328,20 +327,18 @@ function wp_gc_my_calendar()
 
                 <p class="txt-fld">
                     <label for="pPhone">Your Phone</label>
-                    <input id="pPhone" type="phone" name="pPhone" required>
+                    <input id="pPhone" type="text" name="pPhone" required>
                 </p>
 
                 <p class="txt-fld">
                     <label for="pNotes">Your Message</label>
-                    <textarea id="pNotes" name="pNotes"></textarea>
+                    <textarea id="pNotes" name="pNotes" rows="10"></textarea>
                 </p>
 
                 <p class="btn-fld">
                     <input id="start_date" name="start_date" type="hidden">
                     <input id="end_date" name="end_date" type="hidden">
-                    <input id="savebtn" class="btn-frm" type="submit" value="Save">
-                    <input id="cancebtn" class="btn-frm" type="button" value="Cancel"
-                           onClick="jQuery('#eventContent').dialog('close');jQuery('#eventform').trigger( 'reset' );">
+                    <input id="savebtn" class="btn-frm" type="submit" value="Book Appointment">
                 </p>
             </fieldset>
         </form>

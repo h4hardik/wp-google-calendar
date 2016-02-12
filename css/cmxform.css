@@ -4,7 +4,6 @@ Name: cmxform Styles
 
 ***********************************/
 form.cmxform {
-	width: 370px;
 	font-size: 1.0em;
 	color: #333;
 }
@@ -55,12 +54,10 @@ input, textarea {	border-color: #ccc #e7e6e6 #e7e6e6 #ccc;
 .btn-fld{
     overflow: hidden;
     padding: 12px 20px 12px 130px;
-    float: right;
 }
 .txt-fld {
     position: relative;
     text-align: right;
-    width: 364px;
 }
 input.checkbox { border: none }
 input:focus { border: 1px dotted black; }
