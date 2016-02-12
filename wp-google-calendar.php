@@ -77,28 +77,6 @@ function wp_gc_calendar_activate()
         dbDelta($sql);
         add_option('events_database_version', '1.0');
     }
-
-    /*if($wpdb->query("SHOW TABLES LIKE '$table_name'")){
-        if (($tablefields = $wpdb->get_results( 'SHOW COLUMNS FROM '.$table_name, OBJECT )) == TRUE) {
-            $columns = count($tablefields);
-            $field_array = array();
-            for ($i = 0; $i < $columns; $i++) {
-                $fieldname = $tablefields[$i]->Field;
-                $field_array[] = $fieldname;
-            }
-        }
-
-        if (!in_array('attendees', $field_array))
-        {
-            $wpdb->query('ALTER TABLE '. $table_name .' ADD attendees TEXT');
-        }
-        if (!in_array('notification', $field_array))
-        {
-            $wpdb->query('ALTER TABLE '. $table_name .' ADD notification VARCHAR(250)');
-        }
-        $wpdb->query('ALTER TABLE '. $table_name .' MODIFY description TEXT;');
-    }*/
-
     $table_setting = $wpdb->prefix . "google_api_setting";
     if ($wpdb->get_var('SHOW TABLES LIKE ' . $table_setting) != $table_setting) {
         $sql = 'CREATE TABLE ' . $table_setting . '(
