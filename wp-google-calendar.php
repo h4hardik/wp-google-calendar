@@ -139,7 +139,10 @@ add_action('admin_menu', 'wp_gc_plugin_menu');
 /* Admin Interface - display google calendar */
 function wp_gc_calendar_page()
 {
+    global $wpdb;
     $calendar_file = get_option('google_cal_file');
+    $table_name = $wpdb->prefix . "google_events";
+    $url2 = admin_url( 'admin.php?page=google-calendar-plg');
     if ($calendar_file == '') { ?>
         <h2>Settings required ! </h2>
         <p><a href="<?php echo admin_url('admin.php?page=google-calendar-settings'); ?>">Go to settings</a></p>
@@ -160,6 +163,7 @@ function wp_gc_calendar_page()
         );
     }
     $e = json_encode($ev);
+    $all_events = $wpdb->get_results('select * from ' . $table_name);
     ?>
 
     <script src="https://apis.google.com/js/client.js">
@@ -168,9 +172,85 @@ function wp_gc_calendar_page()
         <div style="display:none" class="eventJson" defaultDate="<?php echo date('Y-m-d'); ?>"
              data='<?php echo $e; ?>'></div>
 
-        <h2>List of upcoming events</h2>
+
         <h5>Use the Short code <strong style="color:red;">[wp-gc-calendar]</strong> to display your calendar in your
             posts or pages.</h5>
+        <h2>Requests for Appoitments</h2>
+        <div id="res">
+            <table class="widefat fixed wpgc-table" cellspacing="0">
+                <thead>
+                <tr>
+                    <th id="columnname" class="manage-column column-columnname" scope="col">Request BY</th>
+                    <th id="columnname" class="manage-column column-columnname" scope="col">Start date</th>
+                    <th id="columnname" class="manage-column column-columnname" scope="col">End date</th>
+                    <th id="columnname" class="manage-column column-columnname" scope="col">Message</th>
+                    <th id="columnname" class="manage-column column-columnname" scope="col">Phone</th>
+                    <th id="columnname" class="manage-column column-columnname" scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php $ev = array(); $i=0; ?>
+                <?php foreach ($all_events as $event) {
+                    ?>
+                    <tr class="alternate">
+                        <td class="column-columnname"><?php echo esc_attr($event->name) ?></td>
+                        <td class="column-columnname"><?php echo esc_attr($event->start_Date).' '.esc_attr($event->start_Time) ?></td>
+                        <td class="column-columnname"><?php echo esc_attr($event->end_Date).' '.esc_attr($event->end_Time) ?></td>
+                        <td class="column-columnname"><?php echo esc_attr($event->description) ?></td>
+                        <td class="column-columnname"><?php echo esc_attr($event->phone) ?></td>
+                        <td class="column-columnname">
+                            <a href="<?php echo $url2. '&d='. esc_attr($event->event_id) ?>" onclick="return confirm('Are you sure you want to delete this event?');"><span class="dashicons dashicons-trash"></span></a>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <?php
+                $e = json_encode($ev);
+                ?>
+                </tbody>
+            </table>
+            <div style="display:none" class="eventJson" defaultDate = "<?php echo date('Y-m-d'); ?>" data='<?php echo $e; ?>'></div>
+
+            <script>
+
+                jQuery(document).ready(function() {
+
+                    var ev = eval(jQuery("div.eventJson").attr("data"));
+                    var default_Date = jQuery("div.eventJson").attr("defaultDate");
+
+                    jQuery('#calendar').fullCalendar({
+
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,agendaWeek,agendaDay'
+                        },
+                        defaultDate: default_Date,
+                        selectable: false,
+                        selectHelper: false,
+                        select: function(start, end) {
+                            var title = prompt('Event Title:');
+                            var eventData;
+                            if (title) {
+                                eventData = {
+                                    title: title,
+                                    start: start,
+                                    end: end
+                                };
+                                jQuery('#calendar').fullCalendar('renderEvent', eventData, true);
+                            }
+                            jQuery('#calendar').fullCalendar('unselect');
+                        },
+                        editable: false,
+                        eventLimit: false,
+                        events: ev
+                    });
+
+                });
+
+            </script>
+            <div id='calendar'></div>
+        </div>
+
         <script>
             jQuery(document).ready(function () {
                 var ev = eval(jQuery("div.eventJson").attr("data"));
@@ -203,6 +283,7 @@ function wp_gc_calendar_page()
                 });
             });
         </script>
+
         <div id='calendar'></div>
     </div>
 <?php
