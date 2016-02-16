@@ -40,11 +40,11 @@ function wp_gc_scripts()
 function wp_gcf_scripts()
 {
     wp_enqueue_script('jquery');
+    wp_enqueue_script('jquery-ui-dialog');
     wp_enqueue_script('moment.min', plugins_url('js/moment.min.js', __FILE__));
     wp_enqueue_script('fullcalendar.min', plugins_url('js/fullcalendar.min.js', __FILE__));
-    wp_enqueue_script('jqueryui.min', plugins_url('js/jquery-ui.min.js', __FILE__));
-    wp_enqueue_script('jqueryvalidate.min', plugins_url('js/jquery.validate.js', __FILE__));
-    wp_enqueue_script('mh-gcalendar', plugins_url('js/mh-gcalendar.js', __FILE__));
+    wp_enqueue_script('jqueryvalidate.min', plugins_url('js/jquery.validate.min.js', __FILE__));
+    wp_enqueue_script('wp-gcalendar', plugins_url('js/wp-gcalendar.js', __FILE__));
 }
 
 add_action('wp_head', 'wp_gcf_styles');
@@ -159,7 +159,7 @@ function wp_gc_calendar_page()
                     <th id="columnname" class="manage-column column-columnname" scope="col">End date</th>
                     <th id="columnname" class="manage-column column-columnname" scope="col">Message</th>
                     <th id="columnname" class="manage-column column-columnname" scope="col">Phone</th>
-                    <th id="columnname" class="manage-column column-columnname" scope="col">Action</th>
+                    <!--<th id="columnname" class="manage-column column-columnname" scope="col">Action</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -172,9 +172,9 @@ function wp_gc_calendar_page()
                         <td class="column-columnname"><?php echo esc_attr($event->end_Date).' '.esc_attr($event->end_Time) ?></td>
                         <td class="column-columnname"><?php echo esc_attr($event->description) ?></td>
                         <td class="column-columnname"><?php echo esc_attr($event->phone) ?></td>
-                        <td class="column-columnname">
+                       <!-- <td class="column-columnname">
                             <a href="<?php echo $url2. '&d='. esc_attr($event->event_id) ?>" onclick="return confirm('Are you sure you want to delete this event?');"><span class="dashicons dashicons-trash"></span></a>
-                        </td>
+                        </td>-->
                     </tr>
                 <?php } ?>
                 <?php
