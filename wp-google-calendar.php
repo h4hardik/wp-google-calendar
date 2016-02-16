@@ -116,7 +116,7 @@ function wp_gc_calendar_page()
     global $wpdb;
     $calendar_file = get_option('google_cal_file');
     $table_name = $wpdb->prefix . "google_events";
-    $url2 = admin_url( 'admin.php?page=google-calendar-plg');
+    $wp_plg_page = admin_url( 'admin.php?page=wp-google-calendar-plg');
     if ($calendar_file == '') { ?>
         <h2>Settings required ! </h2>
         <p><a href="<?php echo admin_url('admin.php?page=google-calendar-settings'); ?>">Go to settings</a></p>
@@ -137,7 +137,7 @@ function wp_gc_calendar_page()
         );
     }
     $e = json_encode($ev);
-    $all_events = $wpdb->get_results('select * from ' . $table_name);
+    $all_events = $wpdb->get_results('select * from ' . $table_name . ' where start_Date >= "'.date('Y-m-d').'" ORDER BY start_Date ASC');
     ?>
 
     <script src="https://apis.google.com/js/client.js">
@@ -159,11 +159,11 @@ function wp_gc_calendar_page()
                     <th id="columnname" class="manage-column column-columnname" scope="col">End date</th>
                     <th id="columnname" class="manage-column column-columnname" scope="col">Message</th>
                     <th id="columnname" class="manage-column column-columnname" scope="col">Phone</th>
-                    <!--<th id="columnname" class="manage-column column-columnname" scope="col">Action</th>-->
+                    <th id="columnname" class="manage-column column-columnname" scope="col">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php $ev = array(); $i=0; ?>
+                <?php $ev = array();?>
                 <?php foreach ($all_events as $event) {
                     ?>
                     <tr class="alternate">
@@ -172,9 +172,9 @@ function wp_gc_calendar_page()
                         <td class="column-columnname"><?php echo esc_attr($event->end_Date).' '.esc_attr($event->end_Time) ?></td>
                         <td class="column-columnname"><?php echo esc_attr($event->description) ?></td>
                         <td class="column-columnname"><?php echo esc_attr($event->phone) ?></td>
-                       <!-- <td class="column-columnname">
-                            <a href="<?php echo $url2. '&d='. esc_attr($event->event_id) ?>" onclick="return confirm('Are you sure you want to delete this event?');"><span class="dashicons dashicons-trash"></span></a>
-                        </td>-->
+                       <td class="column-columnname">
+                            <a href="<?php echo $wp_plg_page . '&d='. esc_attr($event->event_id) ?>" onclick="return confirm('Are you sure you want to delete this Appoitment Request?');" title="Delete Appoitment"><span class="dashicons dashicons-trash"></span></a><span class="dashicons dashicons-upload"></span>
+                       </td>
                     </tr>
                 <?php } ?>
                 <?php
@@ -455,7 +455,7 @@ function set_html_content_type_mail()
 }
 
 /**
- * Send mail to user
+ * Add Appointment in DB
  */
 function add_event_action_callback()
 {
@@ -482,15 +482,28 @@ function add_event_action_callback()
         'end_Time' => sanitize_text_field($end_date_time[1])
     );
     $result = $wpdb->insert($table_name, $event);
-
-    echo "<pre>";
-    print_r($result);
-    exit;
-
     if ($result === false) {
         echo "Error in Insert!!";
     }
     wp_die(); // this is required to terminate immediately and return a proper response
 }
-
 add_action('wp_ajax_wpgc_events_action', 'wpgc_events_action_callback');
+
+/**
+ * Function to delete requested appointment
+ */
+function wp_gc_calendar_delete_appointment()
+    {
+        if(isset($_GET['d'])) {
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'google_events';
+            $d = intval($_GET['d']);
+            $wpdb->delete($table_name, array('event_id' => $d), array('%d'));
+            $url = admin_url('admin.php?page=wp-google-calendar-plg');
+        ?>
+        <meta http-equiv="refresh" content="0;URL='<?php echo $url; ?>'" />
+    <?php
+   }}
+add_action('admin_init','wp_gc_calendar_delete_appointment');
+?>
+
