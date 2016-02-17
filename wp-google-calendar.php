@@ -498,6 +498,10 @@ function wp_gc_calendar_delete_appointment()
    }}
 add_action('admin_init','wp_gc_calendar_delete_appointment');
 
+
+/**
+ * Uninstall Plugin
+ */
 if ( function_exists('register_uninstall_hook') )
     register_uninstall_hook(__FILE__, 'wp_gc_calendar_uninstall');
 
