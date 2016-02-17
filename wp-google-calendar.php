@@ -10,6 +10,13 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 add_action('admin_enqueue_scripts', 'wp_gc_styles');
 add_action('admin_enqueue_scripts', 'wp_gc_scripts');
+add_action('wp_head', 'wp_gcf_styles');
+add_action('wp_footer', 'wp_gcf_scripts');
+add_action('admin_menu', 'wp_gc_plugin_menu');
+add_action('wp_enqueue_scripts', 'wp_gc_my_enqueue');
+add_action('wp_ajax_add_event_action', 'add_event_action_callback');
+register_activation_hook(__FILE__, 'wp_gc_calendar_activate');
+add_shortcode('wp-gc-calendar', 'wp_gc_my_calendar');
 
 // Frontend Style
 
@@ -46,9 +53,6 @@ function wp_gcf_scripts()
     wp_enqueue_script('jqueryvalidate.min', plugins_url('js/jquery.validate.min.js', __FILE__));
     wp_enqueue_script('wp-gcalendar', plugins_url('js/wp-gcalendar.js', __FILE__));
 }
-
-add_action('wp_head', 'wp_gcf_styles');
-add_action('wp_footer', 'wp_gcf_scripts');
 
 /**
  *
@@ -93,8 +97,6 @@ function wp_gc_calendar_activate()
     }
 }
 
-register_activation_hook(__FILE__, 'wp_gc_calendar_activate');
-
 // Plugin Menu
 function wp_gc_plugin_menu()
 {
@@ -106,9 +108,9 @@ function wp_gc_plugin_menu()
 
     add_submenu_page('wp-google-calendar-plg', 'Settings', 'Settings', 'manage_options',
         'wp-google-calendar-settings', 'wp_gc_settings');
+    add_submenu_page('wp-google-calendar-plg','Documentation', 'Documentation', 'manage_options',
+        'wp-google-calendar-documentation', 'wpgc_documentation');
 }
-
-add_action('admin_menu', 'wp_gc_plugin_menu');
 
 /* Admin Interface - display google calendar */
 function wp_gc_calendar_page()
@@ -262,6 +264,7 @@ function wp_gc_calendar_page()
     </div>
 <?php
 }
+
 /* Admin Setting Page function */
 function wp_gc_settings()
 {
@@ -444,16 +447,6 @@ function wp_gc_my_enqueue()
         array('ajax_url' => admin_url('admin-ajax.php')));
 }
 
-add_action('wp_enqueue_scripts', 'wp_gc_my_enqueue');
-add_shortcode('wp-gc-calendar', 'wp_gc_my_calendar');
-add_action('wp_ajax_add_event_action', 'add_event_action_callback');
-add_filter('wp_mail_content_type', 'set_html_content_type_mail');
-
-function set_html_content_type_mail()
-{
-    return 'text/html';
-}
-
 /**
  * Add Appointment in DB
  */
@@ -487,7 +480,6 @@ function add_event_action_callback()
     }
     wp_die(); // this is required to terminate immediately and return a proper response
 }
-add_action('wp_ajax_wpgc_events_action', 'wpgc_events_action_callback');
 
 /**
  * Function to delete requested appointment
@@ -505,5 +497,13 @@ function wp_gc_calendar_delete_appointment()
     <?php
    }}
 add_action('admin_init','wp_gc_calendar_delete_appointment');
+
+if ( function_exists('register_uninstall_hook') )
+    register_uninstall_hook(__FILE__, 'wp_gc_calendar_uninstall');
+
+function wp_gc_calendar_uninstall() {
+    global $wpdb;
+    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}google_events" );
+}
 ?>
 
