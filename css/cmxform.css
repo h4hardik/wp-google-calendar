@@ -40,16 +40,6 @@ form.cmxform label.error, label.error {
 	font-style: italic
 }
 div.error { display: none; }
-input, textarea {	border-color: #ccc #e7e6e6 #e7e6e6 #ccc;
-    border-radius: 4px;
-    border-style: solid;
-    border-width: 1px;
-    color: #222;
-    font-family: "Helvetica Neue";
-    font-size: 11px;
-    outline: medium none;
-    padding: 3px;
-    width: 244px; }
 
 .btn-fld{
     overflow: hidden;
@@ -59,9 +49,9 @@ input, textarea {	border-color: #ccc #e7e6e6 #e7e6e6 #ccc;
     position: relative;
     text-align: right;
 }
-input.checkbox { border: none }
-input:focus { border: 1px dotted black; }
-input.error { border: 1px dotted red; }
+#eventform input.checkbox { border: none }
+#eventform input:focus { border: 1px dotted black; }
+#eventform input.error { border: 1px dotted red; }
 form.cmxform .gray * { color: gray; }
 #eventform label.error {
     margin-left: 185px;
@@ -75,14 +65,12 @@ form.cmxform .gray * { color: gray; }
     width:54px;
     z-index:8000;
 }
-
 .ui-dialog-titlebar .ui-dialog-title{
     font-size: 11px !important;
 }
 .ui-dialog{
     padding: 0px!important;
 }
-
 #eventContent .btn-frm {
     -moz-box-shadow:inset 0px 1px 0px 0px #f5978e;
     -webkit-box-shadow:inset 0px 1px 0px 0px #f5978e;
@@ -110,3 +98,8 @@ form.cmxform .gray * { color: gray; }
     position:relative;
     top:1px;
 }
+form.cmxform label.error {
+    margin-left: 103px;
+    width: 220px;
+}
+
