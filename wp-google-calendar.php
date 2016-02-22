@@ -108,17 +108,19 @@ function wp_gc_plugin_menu()
 
     add_submenu_page('wp-google-calendar-plg', 'Settings', 'Settings', 'manage_options',
         'wp-google-calendar-settings', 'wp_gc_settings');
-    add_submenu_page('wp-google-calendar-plg','Documentation', 'Documentation', 'manage_options',
+    add_submenu_page('wp-google-calendar-plg', 'Documentation', 'Documentation', 'manage_options',
         'wp-google-calendar-documentation', 'wpgc_documentation');
 }
 
-/* Admin Interface - display google calendar */
+/***************************************************
+ * Admin Interface - display google calendar
+ * *************************************************/
 function wp_gc_calendar_page()
 {
     global $wpdb;
     $calendar_file = get_option('google_cal_file');
     $table_name = $wpdb->prefix . "google_events";
-    $wp_plg_page = admin_url( 'admin.php?page=wp-google-calendar-plg');
+    $wp_plg_page = admin_url('admin.php?page=wp-google-calendar-plg');
     if ($calendar_file == '') { ?>
         <h2>Settings required ! </h2>
         <p><a href="<?php echo admin_url('admin.php?page=google-calendar-settings'); ?>">Go to settings</a></p>
@@ -139,7 +141,7 @@ function wp_gc_calendar_page()
         );
     }
     $e = json_encode($ev);
-    $all_events = $wpdb->get_results('select * from ' . $table_name . ' where start_Date >= "'.date('Y-m-d').'" ORDER BY start_Date ASC');
+    $all_events = $wpdb->get_results('select * from ' . $table_name . ' where start_Date >= "' . date('Y-m-d') . '" ORDER BY start_Date ASC');
     ?>
 
     <script src="https://apis.google.com/js/client.js">
@@ -151,7 +153,9 @@ function wp_gc_calendar_page()
 
         <h5>Use the Short code <strong style="color:red;">[wp-gc-calendar]</strong> to display your calendar in your
             posts or pages.</h5>
+
         <h2>Requests for Appoitments</h2>
+
         <div id="res">
             <table class="widefat fixed wpgc-table" cellspacing="0">
                 <thead>
@@ -170,13 +174,16 @@ function wp_gc_calendar_page()
                     ?>
                     <tr class="alternate">
                         <td class="column-columnname"><?php echo esc_attr($event->name) ?></td>
-                        <td class="column-columnname"><?php echo esc_attr($event->start_Date).' '.esc_attr($event->start_Time) ?></td>
-                        <td class="column-columnname"><?php echo esc_attr($event->end_Date).' '.esc_attr($event->end_Time) ?></td>
+                        <td class="column-columnname"><?php echo esc_attr($event->start_Date) . ' ' . esc_attr($event->start_Time) ?></td>
+                        <td class="column-columnname"><?php echo esc_attr($event->end_Date) . ' ' . esc_attr($event->end_Time) ?></td>
                         <td class="column-columnname"><?php echo esc_attr($event->description) ?></td>
                         <td class="column-columnname"><?php echo esc_attr($event->phone) ?></td>
-                       <td class="column-columnname">
-                            <a href="<?php echo $wp_plg_page . '&d='. esc_attr($event->event_id) ?>" onclick="return confirm('Are you sure you want to delete this Appoitment Request?');" title="Delete Appoitment"><span class="dashicons dashicons-trash"></span></a><span class="dashicons dashicons-upload"></span>
-                       </td>
+                        <td class="column-columnname">
+                            <a href="<?php echo $wp_plg_page . '&d=' . esc_attr($event->event_id) ?>"
+                               onclick="return confirm('Are you sure you want to delete this Appoitment Request?');"
+                               title="Delete Appoitment"><span class="dashicons dashicons-trash"></span></a><span
+                                class="dashicons dashicons-upload"></span>
+                        </td>
                     </tr>
                 <?php } ?>
                 <?php
@@ -184,11 +191,12 @@ function wp_gc_calendar_page()
                 ?>
                 </tbody>
             </table>
-            <div style="display:none" class="eventJson" defaultDate = "<?php echo date('Y-m-d'); ?>" data='<?php echo $e; ?>'></div>
+            <div style="display:none" class="eventJson" defaultDate="<?php echo date('Y-m-d'); ?>"
+                 data='<?php echo $e; ?>'></div>
 
             <script>
 
-                jQuery(document).ready(function() {
+                jQuery(document).ready(function () {
 
                     var ev = eval(jQuery("div.eventJson").attr("data"));
                     var default_Date = jQuery("div.eventJson").attr("defaultDate");
@@ -203,7 +211,7 @@ function wp_gc_calendar_page()
                         defaultDate: default_Date,
                         selectable: false,
                         selectHelper: false,
-                        select: function(start, end) {
+                        select: function (start, end) {
                             var title = prompt('Event Title:');
                             var eventData;
                             if (title) {
@@ -265,7 +273,9 @@ function wp_gc_calendar_page()
 <?php
 }
 
-/* Admin Setting Page function */
+/***************************************************
+ * Admin Setting Page function
+ * *************************************************/
 function wp_gc_settings()
 {
     global $wpdb;
@@ -364,7 +374,9 @@ function wp_gc_settings()
 <?php
 }
 
-/* Front-end form to add event */
+/***************************************************
+ * Front-end form to add event
+ * *************************************************/
 function wp_gc_my_calendar()
 {
     ?>
@@ -439,6 +451,9 @@ function wp_gc_my_calendar()
     return "<div id='calendar'></div>";
 }
 
+/***************************************************
+ * Add JS
+ * *************************************************/
 function wp_gc_my_enqueue()
 {
 
@@ -447,9 +462,10 @@ function wp_gc_my_enqueue()
         array('ajax_url' => admin_url('admin-ajax.php')));
 }
 
-/**
+/***************************************************
  * Add Appointment in DB
- */
+ * *************************************************/
+
 function add_event_action_callback()
 {
     global $wpdb;
@@ -481,33 +497,88 @@ function add_event_action_callback()
     wp_die(); // this is required to terminate immediately and return a proper response
 }
 
-/**
+/***************************************************
  * Function to delete requested appointment
- */
+ * *************************************************/
+
 function wp_gc_calendar_delete_appointment()
-    {
-        if(isset($_GET['d'])) {
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'google_events';
-            $d = intval($_GET['d']);
-            $wpdb->delete($table_name, array('event_id' => $d), array('%d'));
-            $url = admin_url('admin.php?page=wp-google-calendar-plg');
+{
+    if (isset($_GET['d'])) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'google_events';
+        $d = intval($_GET['d']);
+        $wpdb->delete($table_name, array('event_id' => $d), array('%d'));
+        $url = admin_url('admin.php?page=wp-google-calendar-plg');
         ?>
-        <meta http-equiv="refresh" content="0;URL='<?php echo $url; ?>'" />
+        <meta http-equiv="refresh" content="0;URL='<?php echo $url; ?>'"/>
     <?php
-   }}
-add_action('admin_init','wp_gc_calendar_delete_appointment');
+    }
+}
+
+add_action('admin_init', 'wp_gc_calendar_delete_appointment');
 
 
-/**
+/***************************************************
  * Uninstall Plugin
- */
-if ( function_exists('register_uninstall_hook') )
+ **************************************************/
+if (function_exists('register_uninstall_hook'))
     register_uninstall_hook(__FILE__, 'wp_gc_calendar_uninstall');
 
-function wp_gc_calendar_uninstall() {
+function wp_gc_calendar_uninstall()
+{
     global $wpdb;
-    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}google_events" );
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}google_events");
+}
+
+function wpgc_documentation()
+{
+    $root = plugin_dir_url( __FILE__ );
+    ?>
+    <div class="wrap wp-gc-doc">
+        <h1 class="wpgc-head">WP Google Calendar Plugin</h1>
+        <h3>Creating a Google Client ID</h3>
+        <p>To read and add events from your Google Calendars you’ll need create a Google Client ID
+            and save within your plugin settings. Step-by-step instructions to create and save a Google
+            Client ID: Navigate to the <a href="https://console.developers.google.com/">Google Developers Console</a>.
+            In the drop-down menu at the top right,
+            select Create a project…</p>
+        <img src="<?php echo $root ?>img/1.png" width="1024px" height="120px">
+        <p>Give your project a name, agree to the terms, then click <b>Create</b>.</p>
+        <img src="<?php echo $root ?>img/2.png">
+        <p>From the Google Developers Console Dashboard select <b>Enable and manage APIs</b>.
+            If you don’t see this, select <b>API Manager</b> from the top-left “hamburger” menu.</p>
+        <img src="<?php echo $root ?>img/3.png">
+        <p>You should now be in the API Manager section of the Google Developers Console.
+            Under <b>Google Apps APIs</b>, select <b>Calendar API</b>.</p>
+        <img src="<?php echo $root ?>img/4.png">
+        <p>Click <b>Enable API</b>.</p>
+        <img src="<?php echo $root ?>img/5.png">
+        <p>A message should pop up recommending to proceed with creating credentials. Do this now.
+            Alternatively select Credentials under API Manager in the left-hand menu.</p>
+        <img src="<?php echo $root ?>img/6.png">
+        <p>Select <b>Add credentials</b> and click on <b>API key</b>.</p>
+        <img src="<?php echo $root ?>img/8.png">
+        <p>Click <b>Web application</b> and give your Web application any name, Authorized JavaScript origins as you web site address,and Authorized redirect URIs as the image shows then click <strong>Create.</strong></p>
+        <img src="<?php echo $root ?>img/9.png">
+        <p>On the API key popup, select and copy (Cmd-C or Ctrl-C) your Client ID.</p>
+        <img src="<?php echo $root ?>img/10.png">
+
+        <p>Now back on your <b>WordPress dashboard</b>, go to <b>Calendar</b>, then <b>Settings</b> from the menu. Enter your Google Client ID here, and your Calendar ID making sure you have pasted the exact key without extra spaces. Then click <b>Save</b>.</p>
+        <img src="<?php echo $root ?>img/11.png">
+        <h1>Google Calendar ID</h1>
+        <p>For Your Calendar ID if you want to use your default calendar use primary as an ID,
+            for others go to your Calendar settings and copy your Calendar ID.</p>
+        <img src="<?php echo $root ?>img/13.png"><br/><br/>
+        <hr/><br/>
+        <img src="<?php echo $root ?>img/14.png">
+        <p><i>In case of any error or problem, you may try obtaining a new Google Client ID by repeating the steps above before contacting support. You can generate more than one Client ID under the same project on Google Developers Console.</i></p>
+        <h1>How to use the Admin Interface</h1>
+        <p>Add Client ID ,Google Calendar ID and Google ICAL URL</b></p>
+        <img src="<?php echo $root ?>img/15.png">
+        <h3>Short code</h3>
+        <p>Use the Short code <b>[wp-gc-calendar]</b> to display your calendar in your posts or pages.</p>
+    </div>
+<?php
 }
 ?>
 

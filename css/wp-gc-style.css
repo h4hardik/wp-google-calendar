@@ -144,3 +144,32 @@ a.fc-event{
     font-size: 15px;
     text-align: justify;
 }
+.wp-gc-doc h1{
+   color: #111;
+   font-family: 'Helvetica Neue', sans-serif;
+   font-size: 60px;
+   font-weight: bold;
+   letter-spacing: -1px;
+   line-height: 1;
+   text-align: center;
+}
+.wp-gc-doc h3 {
+    color: #7c795d;
+    font-family: 'Raleway', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 36px;
+    margin: 24px 0 24px;
+}
+.wp-gc-doc p {
+    color: #685206;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    line-height: 24px;
+    margin: 24px 0 24px;
+    text-align: justify;
+    text-justify: inter-word;
+}
+.wp-gc-doc img {
+    border:1px dashed DarkSlateBlue;
+}
