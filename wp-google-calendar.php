@@ -193,16 +193,11 @@ function wp_gc_calendar_page()
             </table>
             <div style="display:none" class="eventJson" defaultDate="<?php echo date('Y-m-d'); ?>"
                  data='<?php echo $e; ?>'></div>
-
             <script>
-
                 jQuery(document).ready(function () {
-
                     var ev = eval(jQuery("div.eventJson").attr("data"));
                     var default_Date = jQuery("div.eventJson").attr("defaultDate");
-
                     jQuery('#calendar').fullCalendar({
-
                         header: {
                             left: 'prev,next today',
                             center: 'title',
@@ -228,47 +223,10 @@ function wp_gc_calendar_page()
                         eventLimit: false,
                         events: ev
                     });
-
                 });
-
             </script>
             <div id='calendar'></div>
         </div>
-
-        <script>
-            jQuery(document).ready(function () {
-                var ev = eval(jQuery("div.eventJson").attr("data"));
-                var default_Date = jQuery("div.eventJson").attr("defaultDate");
-                jQuery('#calendar').fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    defaultDate: default_Date,
-                    selectable: false,
-                    selectHelper: false,
-                    select: function (start, end) {
-                        var title = prompt('Event Title:');
-                        var eventData;
-                        if (title) {
-                            eventData = {
-                                title: title,
-                                start: start,
-                                end: end
-                            };
-                            jQuery('#calendar').fullCalendar('renderEvent', eventData, true);
-                        }
-                        jQuery('#calendar').fullCalendar('unselect');
-                    },
-                    editable: false,
-                    eventLimit: false,
-                    events: ev
-                });
-            });
-        </script>
-
-        <div id='calendar'></div>
     </div>
 <?php
 }
